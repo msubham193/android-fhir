@@ -31,6 +31,16 @@ import com.google.android.fhir.search.filter.ReferenceParamFilterCriterion
 import com.google.android.fhir.search.filter.StringParamFilterCriterion
 import com.google.android.fhir.search.filter.TokenParamFilterCriterion
 import org.hl7.fhir.r4.model.Patient
+import ca.uhn.fhir.rest.gclient.UriClientParam
+import ca.uhn.fhir.rest.param.ParamPrefixEnum
+import java.math.BigDecimal
+import org.hl7.fhir.r4.model.CodeType
+import org.hl7.fhir.r4.model.CodeableConcept
+import org.hl7.fhir.r4.model.Coding
+import org.hl7.fhir.r4.model.ContactPoint
+import org.hl7.fhir.r4.model.DateTimeType
+import org.hl7.fhir.r4.model.DateType
+import org.hl7.fhir.r4.model.Identifier
 import org.hl7.fhir.r4.model.ResourceType
 
 @SearchDslMarker
@@ -105,6 +115,10 @@ data class Search(val type: ResourceType, var count: Int? = null, var from: Int?
     val filters = mutableListOf<NumberParamFilterCriterion>()
     init.forEach { NumberParamFilterCriterion(numberParameter).apply(it).also(filters::add) }
     numberFilterCriteria.add(NumberParamFilterCriteria(filters, operation))
+  }
+
+  fun filter(filter: UriClientParam, uri: String?) {
+
   }
 
   fun sort(parameter: StringClientParam, order: Order) {
