@@ -23,6 +23,13 @@ class FhirEngineRetrieveProvider(val fhirEngine: FhirEngine) : TerminologyAwareR
     dateHighPath: String?,
     dateRange: Interval?
   ): MutableIterable<Any> {
-    return runBlocking { fhirEngine.search<Patient> {  }.toMutableList() }
+    return runBlocking {
+      if (context == "measure") {
+        listOf<Patient>()
+      }
+      fhirEngine.search<Patient> {
+
+      }.toMutableList()
+    }
   }
 }

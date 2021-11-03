@@ -34,12 +34,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import ca.uhn.fhir.context.FhirContext
 import com.google.android.fhir.FhirEngine
 import com.google.android.fhir.reference.PatientListViewModel.PatientListViewModelFactory
 import com.google.android.fhir.reference.databinding.FragmentPatientListBinding
 import com.google.android.fhir.sync.State
+import com.google.android.fhir.workflow.FhirOperator
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.hl7.fhir.r4.model.Library
+import org.hl7.fhir.r4.model.ResourceType
 
 class PatientListFragment : Fragment() {
   private lateinit var fhirEngine: FhirEngine
@@ -139,6 +143,36 @@ class PatientListFragment : Fragment() {
           patientListViewModel.searchPatientsByName(searchView.query.toString().trim())
         }
       }
+    }
+
+    lifecycleScope.launch {
+
+
+      val bundle =
+        FhirContext.forR4()
+          .newJsonParser()
+          .parseResource(requireActivity().application.assets.open("ANCIND01-bundle.json")) as
+          org.hl7.fhir.r4.model.Bundle
+
+      val fhirOperator = FhirOperator(FhirContext.forR4(), fhirEngine)
+
+      for (entry in bundle.entry) {
+        if (entry.resource.resourceType == ResourceType.Library) {
+          fhirOperator.loadLib(entry.resource as Library)
+        } else {
+          fhirEngine.save(entry.resource)
+        }
+      }
+
+      val measureReport =
+        fhirOperator.evaluateMeasure(
+          "http://fhir.org/guides/who/anc-cds/Measure/ANCIND01",
+          "2020-01-01",
+          "2020-01-31",
+          "subject",
+          "patient-charity-otala-1"
+        )
+
     }
   }
 

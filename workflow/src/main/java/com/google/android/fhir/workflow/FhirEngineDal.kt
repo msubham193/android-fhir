@@ -5,10 +5,14 @@ import com.google.android.fhir.search.search
 import kotlinx.coroutines.runBlocking
 import org.hl7.fhir.instance.model.api.IBaseResource
 import org.hl7.fhir.instance.model.api.IIdType
+import org.hl7.fhir.r4.model.Library
+import org.hl7.fhir.r4.model.Measure
 import org.hl7.fhir.r4.model.Patient
 import org.opencds.cqf.cql.evaluator.fhir.dal.FhirDal
 
 class FhirEngineDal(private val fhirEngine: FhirEngine) : FhirDal {
+  val libs = mutableMapOf<String, Library>()
+
   override fun read(id: IIdType?): IBaseResource {
     TODO("Not yet implemented")
   }
@@ -37,9 +41,10 @@ class FhirEngineDal(private val fhirEngine: FhirEngine) : FhirDal {
   override fun searchByUrl(resourceType: String?, url: String?): MutableIterable<IBaseResource> {
     return runBlocking {
       when (resourceType) {
-        "Patient" -> fhirEngine.search<Patient> {}.toMutableList()
-        else -> fhirEngine.search<Patient> {}.toMutableList()
-      }
+        "Measure" -> fhirEngine.search<Measure> { filter(Measure.URL, url) }
+        "Library" -> listOf(libs[url] as Library)
+        else -> listOf()
+      }.toMutableList()
     }
   }
 }

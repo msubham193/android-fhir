@@ -2,6 +2,7 @@ package com.google.android.fhir.workflow
 
 import ca.uhn.fhir.context.FhirContext
 import com.google.android.fhir.FhirEngine
+import org.hl7.fhir.r4.model.Library
 import org.hl7.fhir.r4.model.MeasureReport
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver
@@ -12,10 +13,12 @@ import org.opencds.cqf.cql.evaluator.measure.r4.R4MeasureProcessor
 
 class FhirOperator(fhirContext: FhirContext, fhirEngine: FhirEngine) {
   private var measureProcessor: R4MeasureProcessor
+  val fhirEngineDal = FhirEngineDal(fhirEngine)
+  val adapterFactory = AdapterFactory()
+  val libraryContentProvider = FhirEngineLibraryContentProvider(fhirEngine, adapterFactory)
+
   init {
     val terminologyProvider = FhirEngineTerminologyProvider(fhirContext, fhirEngine)
-    val adapterFactory = AdapterFactory()
-    val libraryContentProvider = FhirEngineLibraryContentProvider(fhirEngine, adapterFactory)
     val bundleRetrieveProvider =
       FhirEngineRetrieveProvider(fhirEngine).apply {
         setTerminologyProvider(terminologyProvider)
@@ -26,7 +29,6 @@ class FhirOperator(fhirContext: FhirContext, fhirEngine: FhirEngine) {
         CachingModelResolverDecorator(R4FhirModelResolver()),
         bundleRetrieveProvider
       )
-    val fhirEngineDal = FhirEngineDal(fhirEngine)
     measureProcessor =
       R4MeasureProcessor(
         null,
@@ -40,6 +42,15 @@ class FhirOperator(fhirContext: FhirContext, fhirEngine: FhirEngine) {
         fhirEngineDal,
         MeasureEvalConfig.defaultConfig()
       )
+  }
+
+  fun loadLib(lib: Library) {
+    if (lib.url != null) {
+      fhirEngineDal.libs[lib.url] = lib
+    }
+    if (lib.name != null) {
+      libraryContentProvider.libs[lib.name] = lib
+    }
   }
 
   fun evaluateMeasure(

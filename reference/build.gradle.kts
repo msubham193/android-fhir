@@ -35,7 +35,29 @@ android {
     targetCompatibility = JavaVersion.VERSION_1_8
   }
   packagingOptions {
-    resources.excludes.addAll(listOf("META-INF/ASL-2.0.txt", "META-INF/LGPL-3.0.txt"))
+    resources.excludes.addAll(
+      listOf(
+        "META-INF/ASL-2.0.txt",
+        "META-INF/LGPL-3.0.txt",
+        "license.html",
+        "readme.html",
+        "META-INF/DEPENDENCIES",
+        "META-INF/LICENSE",
+        "META-INF/LICENSE.txt",
+        "META-INF/license.txt",
+        "META-INF/license.html",
+        "META-INF/LICENSE.md",
+        "META-INF/NOTICE",
+        "META-INF/NOTICE.txt",
+        "META-INF/NOTICE.md",
+        "META-INF/notice.txt",
+        "META-INF/ASL2.0",
+        "META-INF/ASL-2.0.txt",
+        "META-INF/LGPL-3.0.txt",
+        "META-INF/sun-jaxb.episode",
+        "META-INF/*.kotlin_module"
+      )
+    )
   }
   // See https://developer.android.com/studio/write/java8-support
   kotlinOptions { jvmTarget = JavaVersion.VERSION_1_8.toString() }
@@ -45,6 +67,16 @@ configurations {
   all {
     exclude(module = "json")
     exclude(module = "xpp3")
+    exclude(group = "org.apache.httpcomponents")
+    exclude(module = "activation", group = "javax.activation")
+    exclude(module = "javaee-api", group = "javax")
+    exclude(group = "xml-apis")
+    exclude(module = "hamcrest-all")
+    exclude(module = "jaxb-impl")
+    exclude(module = "jaxb-core")
+    exclude(module = "jakarta.activation-api")
+    exclude(module = "javax.activation")
+    exclude(module = "jakarta.xml.bind-api")
   }
 }
 
@@ -75,6 +107,7 @@ dependencies {
   implementation(Dependencies.material)
   implementation(project(":engine"))
   implementation(project(":datacapture"))
+  implementation(project(":workflow"))
 
   testImplementation(Dependencies.junit)
 }

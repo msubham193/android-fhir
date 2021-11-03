@@ -6,6 +6,8 @@ import com.google.android.fhir.FhirEngineProvider
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.hl7.fhir.r4.model.Bundle
+import org.hl7.fhir.r4.model.Library
+import org.hl7.fhir.r4.model.ResourceType
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -22,18 +24,22 @@ class FhirOperatorTest {
 
   @Test
   fun test() {
-    val inputStream = javaClass.getResourceAsStream("/ANCIND01-bundle.json")
-    val content = inputStream!!.bufferedReader(Charsets.UTF_8).readText()
-    //    content.toString()
-    //    val resourceJson = JSONObject(content)
+    val fhirOperator = FhirOperator(FhirContext.forR4(), fhirEngine)
+
     val bundle =
-      FhirContext.forR4().newJsonParser().parseResource(Bundle::class.java, content) as Bundle
+      FhirContext.forR4()
+        .newJsonParser()
+        .parseResource(javaClass.getResourceAsStream("/ANCIND01-bundle.json")) as
+        Bundle
     runBlocking {
       for (entry in bundle.entry) {
-        fhirEngine.save(entry.resource)
+        if (entry.resource.resourceType == ResourceType.Library) {
+          fhirOperator.loadLib(entry.resource as Library)
+        } else {
+          fhirEngine.save(entry.resource)
+        }
       }
     }
-    val fhirOperator = FhirOperator(FhirContext.forR4(), fhirEngine)
 
     val measureReport =
       fhirOperator.evaluateMeasure(
