@@ -15,7 +15,7 @@ android {
     testInstrumentationRunnerArguments["package"] = "com.google.android.fhir.workflow"
   }
 
-  sourceSets { getByName("test").apply { resources.setSrcDirs(listOf("sampledata")) } }
+  sourceSets { getByName("test").apply { resources.setSrcDirs(listOf("testdata")) } }
 
   buildTypes {
     getByName("release") {
@@ -54,11 +54,7 @@ configurations {
     exclude(module = "json")
     exclude(module = "xpp3")
     exclude(module = "hamcrest-all")
-    exclude(module = "jaxb-impl")
-    exclude(module = "jaxb-core")
-    exclude(module = "jakarta.activation-api")
     exclude(module = "javax.activation")
-    exclude(module = "jakarta.xml.bind-api")
   }
 }
 

@@ -70,13 +70,9 @@ configurations {
     exclude(group = "org.apache.httpcomponents")
     exclude(module = "activation", group = "javax.activation")
     exclude(module = "javaee-api", group = "javax")
-    exclude(group = "xml-apis")
     exclude(module = "hamcrest-all")
-    exclude(module = "jaxb-impl")
-    exclude(module = "jaxb-core")
-    exclude(module = "jakarta.activation-api")
     exclude(module = "javax.activation")
-    exclude(module = "jakarta.xml.bind-api")
+    exclude(group = "xml-apis")
   }
 }
 
