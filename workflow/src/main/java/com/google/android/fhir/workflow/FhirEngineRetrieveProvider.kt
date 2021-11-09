@@ -24,12 +24,10 @@ class FhirEngineRetrieveProvider(val fhirEngine: FhirEngine) : TerminologyAwareR
     dateRange: Interval?
   ): MutableIterable<Any> {
     return runBlocking {
-      if (context == "Patient") {
-        val id = contextValue.toString().removePrefix("patient-")
-        val result = fhirEngine.load(Patient::class.java, id)
-        result
+       when (context) {
+        "Patient" -> mutableListOf(fhirEngine.load(Patient::class.java, contextValue.toString()))
+        else -> throw NotImplementedError("Not implemented yet")
       }
-      mutableListOf()
     }
   }
 }

@@ -33,7 +33,7 @@ class FhirEngineDal(private val fhirEngine: FhirEngine) : FhirDal {
     return runBlocking {
       when (resourceType) {
         "Patient" -> fhirEngine.search<Patient> {}.toMutableList()
-        else -> fhirEngine.search<Patient> {}.toMutableList()
+        else -> throw NotImplementedError("Not yet implemented")
       }
     }
   }

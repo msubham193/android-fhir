@@ -11,8 +11,10 @@ import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 import org.opencds.cqf.cql.engine.terminology.ValueSetInfo
 import org.opencds.cqf.cql.evaluator.engine.util.ValueSetUtil
 
-class FhirEngineTerminologyProvider(private val fhirContext: FhirContext, private val fhirEngine: FhirEngine) :
-  TerminologyProvider {
+class FhirEngineTerminologyProvider(
+  private val fhirContext: FhirContext,
+  private val fhirEngine: FhirEngine
+) : TerminologyProvider {
   override fun `in`(code: Code, valueSet: ValueSetInfo): Boolean {
     return expand(valueSet).any { it.code == code.code && it.system == code.system }
   }
