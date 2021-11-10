@@ -33,18 +33,10 @@ class FhirOperator(fhirContext: FhirContext, fhirEngine: FhirEngine) {
       )
     measureProcessor =
       R4MeasureProcessor(
-        null,
-        null,
-        null,
-        null,
-        null,
         terminologyProvider,
         libraryContentProvider,
         dataProvider,
-        fhirEngineDal,
-        MeasureEvalConfig.defaultConfig().apply {
-          measureEvalOptions = EnumSet.of(MeasureEvalOptions.ENABLE_DEBUG_LOGGING)
-        }
+        fhirEngineDal
       )
   }
 
